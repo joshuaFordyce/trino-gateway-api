@@ -1,0 +1,27 @@
+# Values file used to enable the necessary components in Cilium
+# for it to function as a Gateway API Controller and perform L7 routing.
+
+# --- 1. Core Component Activation ---
+# Enables the Cilium Gateway API controller and required components (Hubble)
+gatewayAPI:
+  enabled: true
+  # Set the class name Cilium will claim. This must match the name in your GatewayClass YAML
+  defaultGatewayClass: istio-trino-class # Match this to your final chosen controller name if not using the 'istio-trino-class' placeholder
+
+# --- 2. Hubble Observability (Crucial for debugging L7 routes) ---
+hubble:
+  enabled: true
+  # Hubble Relay is required for the Gateway API controller to access flow data
+  relay:
+    enabled: true
+
+# --- 3. L7/Proxy Configuration (Necessary for HTTPRoute to work) ---
+# L7 policy enforcement uses an embedded Envoy proxy, which is required
+# for the HTTPRoute rules (like hostname matching and path prefixes) to function.
+enableL7Proxies: true
+
+# --- 4. Networking Foundation (Ensuring high performance remains) ---
+# These are kept for context, ensuring the core eBPF datapath is used.
+kubeProxyReplacement: strict
+routingMode: native
+ipv4NativeRoutingCIDR: "10.42.0.0/16" # Ensure this matches your cluster's actual Pod CIDR
