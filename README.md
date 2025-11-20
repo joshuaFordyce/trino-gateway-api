@@ -1,12 +1,19 @@
-# 📉 Optimized Autoscaling for Trino (HPA/VPA)
+Trino Coordinator Exposure via Kubernetes Gateway API (Istio)
+This repository provides the Kubernetes Gateway API resource definitions (Gateway, HTTPRoute) to expose the internal Trino Coordinator Service externally using the Istio Gateway Controller.
 
-This project provides advanced Horizontal Pod Autoscaler (HPA) and Vertical Pod Autoscaler (VPA) templates tailored for Trino's workload profile, focusing on query throughput rather than simple CPU usage.
 
-## Key Contributions:
+Provide a public endpoint for the Trino Coordinator Service running in the trino-ftr namespace, leveraging Istio's advanced traffic management capabilities.
 
-1.  **Queue-Depth HPA:** Uses a **Custom Metric** (e.g., `trino_queries_pending_count` scraped by Prometheus) to scale the worker fleet based on actual **demand (queue depth)**, ensuring faster response times than standard CPU-based scaling.
-2.  **VPA for Right-Sizing:** Provides a template to run VPA (Vertical Pod Autoscaler) on the workers to generate optimal `requests` and `limits` recommendations. This ensures users adopt the **Guaranteed QoS** settings (`requests` == `limits`) with minimal waste.
-3.  **HPA Configuration Integration:** Adds the HPA custom metric definition to the main Trino Helm Chart, allowing users to enable highly efficient autoscaling out of the box.
+Prerequisites
+Istio Gateway Controller installed and running.
 
-## PR Strategy:
-Templates should be added to the Trino Helm Chart documentation and the `templates/` directory, ideally with a configuration option like `autoscaling.type: QueueDepthHPA`.
+Application namespace (trino-ftr) and Gateway namespace (gateway-system) created.
+
+Trino Coordinator Service running in the trino-ftr namespace.
+
+Deployment
+Apply the provided Gateway API definitions to your cluster:
+
+Bash
+
+kubectl apply -f trino-gateway-api.yaml
